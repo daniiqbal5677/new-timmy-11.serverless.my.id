@@ -33,9 +33,18 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
-      - name: Terraform Import S3 Bucket
+      - name: Import S3 Bucket
         working-directory: ./terraform
         run: terraform import aws_s3_bucket.site_bucket new-timmy-11.serverless.my.id
+
+      - name: Import CloudFront Distribution (if exists)
+        working-directory: ./terraform
+        run: |
+          DISTRIBUTION_ID=$(aws cloudfront list-distributions --query "DistributionList.Items[?Aliases.Items[?contains(@, 'new-timmy-11.serverless.my.id')]].Id" --output text)
+          if [ -n "$DISTRIBUTION_ID" ]; then
+            terraform import aws_cloudfront_distribution.cdn $DISTRIBUTION_ID || echo "Failed to import existing CloudFront distribution."
+          fi
+        continue-on-error: true
 
       - name: Terraform Plan
         working-directory: ./terraform
@@ -68,3 +77,6 @@ jobs:
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
