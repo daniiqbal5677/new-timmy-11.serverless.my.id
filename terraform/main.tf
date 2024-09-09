@@ -6,7 +6,6 @@ resource "aws_s3_bucket" "site_bucket" {
   bucket = "new-timmy-11.serverless.my.id"
 }
 
-
 resource "aws_s3_bucket_website_configuration" "site_bucket_website" {
   bucket = aws_s3_bucket.site_bucket.id
 
@@ -25,10 +24,14 @@ resource "aws_s3_bucket_versioning" "site_bucket_versioning" {
 resource "aws_s3_bucket_public_access_block" "site_bucket_public_access" {
   bucket = aws_s3_bucket.site_bucket.id
 
-  block_public_acls       = false
+  block_public_acls       = true
   block_public_policy     = false
   ignore_public_acls      = true
-  restrict_public_buckets = false
+  restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket" "asset_bucket" {
+  bucket = "new-timmy-11-assets.serverless.my.id"
 }
 
 resource "aws_cloudfront_distribution" "cdn" {
