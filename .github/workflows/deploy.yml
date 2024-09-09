@@ -30,7 +30,7 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  
+
   deploy:
     name: Deploy Static Website to S3
     runs-on: ubuntu-latest
@@ -40,17 +40,22 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      - name: Verify AWS CLI Installation
+        run: aws --version
+
+      - name: List Static Website Files
+        run: ls -l static-website/
+
       - name: Sync website files to S3
         run: |
-          aws s3 sync static-website/ s3://new-timmy-11.serverless.my.id --delete
+          aws s3 sync static-website/ s3://new-timmy-11.serverless.my.id --delete --debug
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    
+
       - name: Invalidate CloudFront Cache
         run: |
           aws cloudfront create-invalidation --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} --paths "/*"
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
