@@ -6,6 +6,11 @@ resource "aws_s3_bucket" "site_bucket" {
   bucket = "new-timmy-11.serverless.my.id"
 }
 
+  lifecycle {
+    prevent_destroy = true
+  }
+}
+
 resource "aws_s3_bucket_website_configuration" "site_bucket_website" {
   bucket = aws_s3_bucket.site_bucket.id
 
