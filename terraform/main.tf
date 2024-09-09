@@ -6,12 +6,6 @@ resource "aws_s3_bucket" "site_bucket" {
   bucket = "new-timmy-11.serverless.my.id"
 }
 
-# Use lifecycle to ignore changes if the bucket already exists
-  lifecycle {
-    prevent_destroy = true
-    ignore_changes  = [bucket]
-  }
-}
 
 resource "aws_s3_bucket_website_configuration" "site_bucket_website" {
   bucket = aws_s3_bucket.site_bucket.id
@@ -33,7 +27,7 @@ resource "aws_s3_bucket_public_access_block" "site_bucket_public_access" {
 
   block_public_acls       = false
   block_public_policy     = false
-  ignore_public_acls      = false
+  ignore_public_acls      = true
   restrict_public_buckets = false
 }
 
