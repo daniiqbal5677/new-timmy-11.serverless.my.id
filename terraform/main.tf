@@ -30,10 +30,6 @@ resource "aws_s3_bucket_public_access_block" "site_bucket_public_access" {
   restrict_public_buckets = true
 }
 
-resource "aws_s3_bucket" "asset_bucket" {
-  bucket = "new-timmy-11-assets.serverless.my.id"
-}
-
 resource "aws_cloudfront_distribution" "cdn" {
   origin {
     domain_name = aws_s3_bucket.site_bucket.bucket_regional_domain_name
