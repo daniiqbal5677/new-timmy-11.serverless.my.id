@@ -4,8 +4,9 @@ provider "aws" {
 
 resource "aws_s3_bucket" "site_bucket" {
   bucket = "new-timmy-11.serverless.my.id"
+}
 
-  # Use lifecycle to ignore changes if the bucket already exists
+# Use lifecycle to ignore changes if the bucket already exists
   lifecycle {
     prevent_destroy = true
     ignore_changes  = [bucket]
@@ -22,7 +23,6 @@ resource "aws_s3_bucket_website_configuration" "site_bucket_website" {
 
 resource "aws_s3_bucket_versioning" "site_bucket_versioning" {
   bucket = aws_s3_bucket.site_bucket.id
-
   versioning_configuration {
     status = "Enabled"
   }
@@ -52,7 +52,7 @@ resource "aws_cloudfront_distribution" "cdn" {
   default_cache_behavior {
     target_origin_id       = "S3-new-timmy-11.serverless.my.id"
     viewer_protocol_policy = "redirect-to-https"
-    allowed_methods        = ["GET", HEAD"]
+    allowed_methods        = ["GET", "HEAD"]
     cached_methods         = ["GET", "HEAD"]
 
     forwarded_values {
@@ -61,9 +61,9 @@ resource "aws_cloudfront_distribution" "cdn" {
         forward = "none"
       }
     }
-    min_ttl    = 0
-    default_ttl = 3600
-    max_ttl    = 86400
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
   }
 
   restrictions {
