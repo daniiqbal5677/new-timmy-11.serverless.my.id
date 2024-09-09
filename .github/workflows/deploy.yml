@@ -26,6 +26,10 @@ jobs:
         working-directory: ./terraform
         run: terraform init
 
+      - name: Terraform Import S3 Bucket
+        working-directory: ./terraform
+        run: terraform import aws_s3_bucket.site_bucket new-timmy-11.serverless.my.id
+
       - name: Terraform Plan
         working-directory: ./terraform
         run: terraform plan -out=tfplan
